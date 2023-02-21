@@ -3,7 +3,7 @@ import numpy as np
 
 
 def make_list():
-    reqs = pd.read_excel(r"C:\Users\Миша\Desktop\reqs2.xlsx")
+    reqs = pd.read_excel(r"C:\Users\misha\Downloads\Telegram Desktop\reqs2.xlsx")
     a = []
     b = []
     for req in reqs['requests']:

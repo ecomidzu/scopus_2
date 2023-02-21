@@ -7,12 +7,13 @@ from get_reqs import make_list, new_project
 from tqdm import tqdm
 from make_conf import rework_config
 import warnings
+import requests
+
 warnings.filterwarnings("ignore")
 
 
 all_start = time.time()
-rework_config('88cc291ce61bc3fc47719150c98cd579')
-#095077ce05f051edc5d39203344338ae API_key
+key = ''
 reqs = make_list()
 data = {'title': []}
 df_total = pd.DataFrame(data)
@@ -43,14 +44,16 @@ for g in range(32,len(reqs)):
     for i in tqdm(range(df.shape[0])):
         df_inter = pd.DataFrame()
         try:
-            ab = AbstractRetrieval(df['eid'][i], view='META')
+            print(df['eid'].to_numpy()[i])
+            params = {'view': 'META', 'apiKey': key}
+            ab = requests.get(url='https://api.elsevier.com/content/abstract/eid/' + df['eid'].to_numpy()[i],params=params)
         except:
             try:
-                ab = AbstractRetrieval(df['doi'][i], view='META')
+                params = {'view': 'META', 'apiKey': key}
+                ab = requests.get(url='https://api.elsevier.com/content/abstract/doi/' + df['eid'].to_numpy()[i], params=params)
             except Exception as e:
                 print(e)
                 number_of_except +=1
-                continue
         try:
             rrr = ab.__dict__
             r1 = {}
@@ -58,6 +61,7 @@ for g in range(32,len(reqs)):
                 r1[key] = [rrr[key]]
             df_inter = pd.DataFrame.from_dict(r1)
         except:
+            print(ab)
             number_of_except += 1
             continue
         df_total = pd.concat([df_total, df_inter])
